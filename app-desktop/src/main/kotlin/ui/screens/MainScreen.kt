@@ -12,7 +12,7 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
-import com.vickikbt.kmptemplate.presentation.viewmodels.MainViewModel
+import com.kplc.outage.presentation.viewmodels.MainViewModel
 import koin
 
 @Composable

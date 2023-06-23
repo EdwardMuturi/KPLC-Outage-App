@@ -1,5 +1,5 @@
 import androidx.compose.ui.window.application
-import com.vickikbt.kmptemplate.di.initKoin
+import com.kplc.outage.di.initKoin
 import org.koin.core.Koin
 import ui.screens.MainScreen
 
