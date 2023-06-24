@@ -120,12 +120,17 @@ private fun OutageCard(
         modifier = Modifier
             .padding(vertical = 10.dp),
     ) {
+        val borderModifier= if (outage.part.isEmpty())
+            Modifier.height(140.dp)
+        else
+            Modifier.height(180.dp)
+
         Box(Modifier.fillMaxWidth()) {
             Spacer(
                 Modifier
                     .align(Alignment.TopStart)
                     .width(3.dp)
-                    .height(180.dp)
+                    .then(borderModifier)
                     .background(color = Color(0XFF0B4A7A)),
             )
 
