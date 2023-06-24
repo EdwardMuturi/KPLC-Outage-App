@@ -1,7 +1,7 @@
 package com.kplc.outage.android
 
 import android.app.Application
-import com.kplc.outage.android.di.androidModule
+import com.kplc.outage.android.outage.di.androidModule
 import com.kplc.outage.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

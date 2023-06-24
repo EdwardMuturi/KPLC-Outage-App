@@ -1,6 +1,7 @@
 package com.kplc.outage.outage.presentation
 
 import com.kplc.outage.outage.domain.FetchOutagesUseCase
+import com.kplc.outage.outage.model.OutageInformation
 import com.kplc.outage.outage.model.OutageInformationUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,9 +14,9 @@ import org.koin.core.component.KoinComponent
 
 class OutageViewModel constructor(private val fetchOutagesUseCase: FetchOutagesUseCase) :
     KoinComponent {
-    private val _outageInformationUiState: MutableStateFlow<OutageInformationUiState> =
-        MutableStateFlow(OutageInformationUiState())
-    val outageInformationUiState: StateFlow<OutageInformationUiState> get() = _outageInformationUiState
+    private val _outageInformationUiState: MutableStateFlow<OutageInformation> =
+        MutableStateFlow(OutageInformation())
+    val outageInformationUiState: StateFlow<OutageInformation> get() = _outageInformationUiState
     private val viewModelScope = CoroutineScope(Dispatchers.Default)
 
     fun fetchOutages() {

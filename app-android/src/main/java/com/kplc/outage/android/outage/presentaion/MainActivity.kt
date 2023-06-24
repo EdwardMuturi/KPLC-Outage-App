@@ -1,4 +1,4 @@
-package com.kplc.outage.android.ui.activities
+package com.kplc.outage.android.outage.presentaion
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.kplc.outage.android.ui.screens.MainScreen
+import com.kplc.outage.android.outage.presentaion.screens.OutagesScreen
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -23,9 +23,9 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
-                    MainScreen()
+                    OutagesScreen()
                 }
             }
         }
