@@ -1,0 +1,12 @@
+CREATE TABLE part (
+name TEXT NOT NULL PRIMARY KEY,
+regionId TEXT NOT NULL
+);
+
+tAll:
+SELECT *
+FROM part;
+
+insert:
+INSERT INTO part(name, regionId)
+VALUES ?;

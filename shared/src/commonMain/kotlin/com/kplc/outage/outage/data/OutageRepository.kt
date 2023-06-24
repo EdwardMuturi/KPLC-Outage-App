@@ -1,9 +1,10 @@
 package com.kplc.outage.outage.data
 
+import com.kplc.outage.outage.data.local.sqldelight.AppDatabase
 import com.kplc.outage.outage.data.remote.Dto.OutageResponse
 import com.kplc.outage.outage.data.remote.OutageService
 
-class OutageRepository(private val outageService: OutageService) {
+class OutageRepository(private val outageService: OutageService, private val database: AppDatabase) {
     suspend fun loadOutages(): OutageResponse {
         return outageService.fetchOutages()
     }

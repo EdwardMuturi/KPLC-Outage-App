@@ -1,0 +1,12 @@
+CREATE TABLE area (
+name TEXT NOT NULL PRIMARY KEY,
+partId TEXT NOT NULL
+);
+
+tAll:
+SELECT *
+FROM area;
+
+insert:
+INSERT INTO area(name, partId)
+VALUES ?;

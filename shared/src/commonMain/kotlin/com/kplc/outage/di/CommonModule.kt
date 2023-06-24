@@ -1,6 +1,8 @@
 package com.kplc.outage.di
 
 import com.kplc.outage.outage.data.OutageRepository
+import com.kplc.outage.outage.data.local.sqldelight.AppDatabase
+import com.kplc.outage.outage.data.local.sqldelight.createDatabase
 import com.kplc.outage.outage.data.remote.OutageService
 import com.kplc.outage.outage.utils.OutageConstants.BASE_URL
 import com.kplc.outage.presentation.utils.Greeting
@@ -56,5 +58,6 @@ val network = module {
 }
 
 val data = module {
-    single { OutageRepository(get()) }
+    single { createDatabase(get()) }
+    single { OutageRepository(get(), get()) }
 }
