@@ -1,8 +1,14 @@
-CREATE TABLE region (name TEXT NOT NULL PRIMARY KEY);
+CREATE TABLE region (
+name TEXT NOT NULL);
 selectAll:
 SELECT *
 FROM region;
 
+findByName:
+SELECT *
+FROM region
+WHERE name = ?;
+
 insert:
-INSERT INTO region(name)
+INSERT OR REPLACE INTO region(name)
 VALUES (?);

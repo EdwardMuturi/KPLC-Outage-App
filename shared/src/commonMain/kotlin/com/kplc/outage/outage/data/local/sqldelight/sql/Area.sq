@@ -1,12 +1,18 @@
 CREATE TABLE area (
-name TEXT NOT NULL PRIMARY KEY,
-partId TEXT NOT NULL
+name TEXT NOT NULL,
+partId TEXT NOT NULL,
+regionId TEXT NOT NULL
 );
 
 tAll:
 SELECT *
 FROM area;
 
+findByRegionId:
+SELECT *
+FROM area
+WHERE regionId = ?;
+
 insert:
-INSERT INTO area(name, partId)
+INSERT OR REPLACE INTO area(name, partId, regionId)
 VALUES ?;
