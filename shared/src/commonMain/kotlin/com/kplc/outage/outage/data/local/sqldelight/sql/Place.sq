@@ -1,0 +1,14 @@
+CREATE TABLE place (
+name TEXT NOT NULL PRIMARY KEY,
+areaId TEXT NOT NULL,
+startDate TEXT NOT NULL,
+endDate TEXT NOT NULL
+);
+
+lectAll:
+SELECT *
+FROM place;
+
+insert:
+INSERT INTO place(name, areaId, startDate, endDate)
+VALUES ?;

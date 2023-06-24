@@ -82,7 +82,7 @@ kotlin {
 
 sqldelight {
     database(name = "AppDatabase") {
-        packageName = "com.vickikbt.kmptemplate.data.cache.sqldelight"
+        packageName = "com.kplc.outage.outage.data.local.sqldelight"
         sourceFolders = listOf("kotlin")
     }
 }

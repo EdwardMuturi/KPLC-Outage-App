@@ -1,0 +1,8 @@
+CREATE TABLE region (name TEXT NOT NULL PRIMARY KEY);
+selectAll:
+SELECT *
+FROM region;
+
+insert:
+INSERT INTO region(name)
+VALUES (?);
