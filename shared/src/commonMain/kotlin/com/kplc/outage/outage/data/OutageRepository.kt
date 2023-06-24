@@ -56,8 +56,6 @@ class OutageRepository(
                 place,
                 area.area,
                 region,
-                "${area.date.day / area.date.month / area.date.year} ${area.time.start}",
-                "${area.date.day / area.date.month / area.date.year} ${area.time.end}",
             ),
         )
     }
@@ -71,7 +69,15 @@ class OutageRepository(
         part: PartDto,
         region: String,
     ) {
-        database.areaQueries.insert(Area(area.area, part.part, region))
+        database.areaQueries.insert(
+            Area(
+                area.area,
+                region,
+                date = "${area.date.day}/${area.date.month}/${area.date.year}",
+                startTime = area.time.start,
+                endTime = area.time.end,
+            ),
+        )
     }
 
     private fun savePart(

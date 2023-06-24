@@ -27,8 +27,8 @@ class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
                     areas = places.map {
                         OutageInformationAreaUiState(
                             it.name,
-                            it.startDate.plus(it.endDate),
-                            it.endDate,
+                            "",
+                            "",
                             places.map { place -> OutageInformationPlacesUiState(place.name) },
                         )
                     },
