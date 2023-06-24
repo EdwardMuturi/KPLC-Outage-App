@@ -12,3 +12,6 @@ WHERE name = ?;
 insert:
 INSERT OR REPLACE INTO region(name)
 VALUES (?);
+
+deleteAll:
+DELETE FROM region;

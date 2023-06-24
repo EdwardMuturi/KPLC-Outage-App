@@ -1,9 +1,7 @@
 CREATE TABLE place (
 name TEXT NOT NULL,
 areaId TEXT NOT NULL,
-regionId TEXT NOT NULL,
-startDate TEXT NOT NULL,
-endDate TEXT NOT NULL
+regionId TEXT NOT NULL
 );
 
 lectAll:
@@ -23,3 +21,6 @@ WHERE regionId = ?;
 insert:
 INSERT OR REPLACE INTO place
 VALUES ?;
+
+deleteAll:
+DELETE FROM place;

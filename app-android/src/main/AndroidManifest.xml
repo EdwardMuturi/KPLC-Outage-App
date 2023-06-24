@@ -6,10 +6,11 @@
     <application
         android:name="com.kplc.outage.android.AndroidApplication"
         android:allowBackup="false"
+        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.kplc.outage.android.ui.activities.MainActivity"
+            android:name="com.kplc.outage.android.outage.presentaion.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

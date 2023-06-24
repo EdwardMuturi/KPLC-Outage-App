@@ -1,7 +1,9 @@
 CREATE TABLE area (
 name TEXT NOT NULL,
-partId TEXT NOT NULL,
-regionId TEXT NOT NULL
+regionId TEXT NOT NULL,
+date TEXT NOT NULL,
+startTime TEXT NOT NULL,
+endTime TEXT NOT NULL
 );
 
 tAll:
@@ -14,5 +16,8 @@ FROM area
 WHERE regionId = ?;
 
 insert:
-INSERT OR REPLACE INTO area(name, partId, regionId)
+INSERT OR REPLACE INTO area(name, regionId, date, startTime, endTime)
 VALUES ?;
+
+deleteAll:
+DELETE FROM area;
