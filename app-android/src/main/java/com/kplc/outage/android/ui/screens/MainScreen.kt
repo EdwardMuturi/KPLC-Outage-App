@@ -35,7 +35,7 @@ fun MainScreen(viewModel: MainViewModel = get(), outageViewModel: OutageViewMode
                 outage.areas.onEach { area ->
                     OutageText(text = area.name)
                     OutageText(text = area.date)
-                    OutageText(text = area.places.toString())
+                    OutageText(text = area.places.map { it.name }.toString())
                 }
             }
         }

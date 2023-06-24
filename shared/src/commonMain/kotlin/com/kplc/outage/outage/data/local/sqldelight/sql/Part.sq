@@ -1,5 +1,5 @@
 CREATE TABLE part (
-name TEXT NOT NULL PRIMARY KEY,
+name TEXT NOT NULL,
 regionId TEXT NOT NULL
 );
 
@@ -7,7 +7,7 @@ tAll:
 SELECT *
 FROM part;
 
-findById:
+findByName:
 SELECT *
 FROM part
 WHERE name = ?;
@@ -18,5 +18,5 @@ FROM part
 WHERE regionId = ?;
 
 insert:
-INSERT INTO part(name, regionId)
+INSERT OR REPLACE INTO part(name, regionId)
 VALUES ?;

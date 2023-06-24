@@ -4,7 +4,6 @@ import com.kplc.outage.outage.data.local.sqldelight.AppDatabase
 import com.kplc.outage.outage.data.local.sqldelight.sql.Area
 import com.kplc.outage.outage.data.local.sqldelight.sql.Part
 import com.kplc.outage.outage.data.local.sqldelight.sql.Place
-import com.kplc.outage.outage.data.local.sqldelight.sql.Region
 import com.kplc.outage.outage.data.remote.Dto.AreaDto
 import com.kplc.outage.outage.data.remote.Dto.OutageResponse
 import com.kplc.outage.outage.data.remote.Dto.PartDto
@@ -23,18 +22,26 @@ class OutageRepository(
     private fun saveRemoteData(outageResponse: OutageResponse) {
         outageResponse.data.regions.onEachIndexed { index, regionDto ->
             saveRegion(regionDto)
-            savePart(regionDto.parts[index], regionDto)
-            regionDto.parts[index].areas.onEach { area -> saveArea(area, regionDto.parts[index], regionDto.region) }
-            regionDto.parts[index].areas.flatMap { it.places }.onEachIndexed { pIndex, place ->
-                savePlace(
-                    regionDto.region,
-                    place,
-                    regionDto.parts[index].areas[pIndex -1 ],
-                )
+            regionDto.parts.onEach { part ->
+                savePart(part, regionDto)
+                part.areas.onEach { area ->
+                    saveArea(
+                        area,
+                        part,
+                        regionDto.region,
+                    )
+
+                    area.places.onEach { place ->
+                        savePlace(
+                            regionDto.region,
+                            place,
+                            area,
+                        )
+                    }
+                }
             }
         }
     }
-
     private fun savePlace(region: String, place: String, area: AreaDto) {
         database.placeQueries.insert(
             Place(
@@ -66,18 +73,17 @@ class OutageRepository(
         database.partQueries.insert(Part(part.part, it.region))
     }
 
-    fun findRegionById(regionId: String) =
-        Region(database.regionQueries.findById(regionId).executeAsOne())
+    fun findAllRegions(): List<String> = database.regionQueries.selectAll().executeAsList()
 
-    fun findAllRegions() = database.regionQueries.selectAll().executeAsList()
+    fun findAreaByRegion(regionId: String) =
+        database.areaQueries.findByRegionId(regionId).executeAsList()
 
-    fun findAreaByRegion(regionId: String) = database.areaQueries.findByRegionId(regionId).executeAsList()
-
-
-    fun findPlacesByArea(areaId: String) = database.placeQueries.findByAreaId(areaId).executeAsList()
+    fun findPlacesByArea(areaId: String) =
+        database.placeQueries.findByAreaId(areaId).executeAsList()
 
     fun fetchPartsByRegionId(regionId: String) =
         database.partQueries.findByRegionId(regionId).executeAsList()
 
-    fun findPlacesByRegion(regionId: String) = database.placeQueries.findByRegionId(regionId).executeAsList()
+    fun findPlacesByRegion(regionId: String): List<Place> =
+        database.placeQueries.findByRegionId(regionId).executeAsList()
 }

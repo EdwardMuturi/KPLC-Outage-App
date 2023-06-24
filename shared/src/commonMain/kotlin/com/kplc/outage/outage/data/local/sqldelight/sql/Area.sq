@@ -1,5 +1,5 @@
 CREATE TABLE area (
-name TEXT NOT NULL PRIMARY KEY,
+name TEXT NOT NULL,
 partId TEXT NOT NULL,
 regionId TEXT NOT NULL
 );
@@ -14,5 +14,5 @@ FROM area
 WHERE regionId = ?;
 
 insert:
-INSERT INTO area(name, partId, regionId)
+INSERT OR REPLACE INTO area(name, partId, regionId)
 VALUES ?;

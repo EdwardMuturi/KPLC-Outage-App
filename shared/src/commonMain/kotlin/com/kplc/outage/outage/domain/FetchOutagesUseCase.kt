@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 
 class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
     operator fun invoke() = flow {
-        outageRepository.loadOutages()
+//        outageRepository.loadOutages()
         val outages = outageRepository.findAllRegions()
             .mapToOutageInformationRegionUiState { outageRepository.findPlacesByRegion(it) }
         println(outages)
