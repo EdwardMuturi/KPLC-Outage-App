@@ -23,7 +23,7 @@ class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
             regions = this.map { region ->
                 val places = fetchPlacesByRegion(region)
                 OutageInformationRegionUiState(
-                    region,
+                    region.trim().trimIndent(),
                     areas = places.map {
                         OutageInformationAreaUiState(
                             it.name,
