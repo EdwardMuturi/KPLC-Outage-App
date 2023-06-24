@@ -7,6 +7,16 @@ tAll:
 SELECT *
 FROM part;
 
+findById:
+SELECT *
+FROM part
+WHERE name = ?;
+
+findByRegionId:
+SELECT *
+FROM part
+WHERE regionId = ?;
+
 insert:
 INSERT INTO part(name, regionId)
 VALUES ?;

@@ -3,6 +3,11 @@ selectAll:
 SELECT *
 FROM region;
 
+findById:
+SELECT *
+FROM region
+WHERE name = ?;
+
 insert:
 INSERT INTO region(name)
 VALUES (?);
