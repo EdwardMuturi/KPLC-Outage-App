@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class MainViewModel constructor(private val greetingRepository: Greeting, private val outageRepository: OutageRepository) : KoinComponent {
+class MainViewModel constructor(private val greetingRepository: Greeting) : KoinComponent {
 
     // @NativeCoroutineScope
     private val viewModelScope = CoroutineScope(Dispatchers.Default)

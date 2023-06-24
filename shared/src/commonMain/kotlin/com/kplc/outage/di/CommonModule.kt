@@ -1,10 +1,10 @@
 package com.kplc.outage.di
 
 import com.kplc.outage.outage.data.OutageRepository
-import com.kplc.outage.outage.data.local.sqldelight.AppDatabase
 import com.kplc.outage.outage.data.local.sqldelight.createDatabase
 import com.kplc.outage.outage.data.remote.OutageService
-import com.kplc.outage.outage.domain.FetchOutageInformationUiState
+import com.kplc.outage.outage.domain.FetchOutagesUseCase
+import com.kplc.outage.outage.presentation.OutageViewModel
 import com.kplc.outage.outage.utils.OutageConstants.BASE_URL
 import com.kplc.outage.presentation.utils.Greeting
 import com.kplc.outage.presentation.viewmodels.MainViewModel
@@ -25,6 +25,10 @@ fun commonModule(isDebug: Boolean) = module {
     singleOf(::Greeting)
 
     singleOf(::MainViewModel)
+}
+
+val presentation = module {
+    single { OutageViewModel(get()) }
 }
 
 val network = module {
@@ -61,5 +65,5 @@ val network = module {
 val data = module {
     single { createDatabase(get()) }
     single { OutageRepository(get(), get()) }
-    single { FetchOutageInformationUiState(get()) }
+    single { FetchOutagesUseCase(get()) }
 }

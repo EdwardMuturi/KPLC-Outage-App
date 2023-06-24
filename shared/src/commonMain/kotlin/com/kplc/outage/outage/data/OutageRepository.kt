@@ -29,7 +29,7 @@ class OutageRepository(
                 savePlace(
                     regionDto.region,
                     place,
-                    regionDto.parts[index].areas[pIndex],
+                    regionDto.parts[index].areas[pIndex -1 ],
                 )
             }
         }
