@@ -1,0 +1,11 @@
+package com.kplc.outage.outage.data.remote.Dto
+
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class OutageRequest(
+    @SerialName("url")
+    val url: String
+)
