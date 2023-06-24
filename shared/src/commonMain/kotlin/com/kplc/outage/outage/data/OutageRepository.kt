@@ -16,7 +16,15 @@ class OutageRepository(
 ) {
     suspend fun loadOutages() {
         val outageResponse = outageService.fetchOutages()
+        clearTables()
         saveRemoteData(outageResponse)
+    }
+
+    private fun clearTables() {
+        database.areaQueries.deleteAll()
+        database.partQueries.deleteAll()
+        database.placeQueries.deleteAll()
+        database.regionQueries.deleteAll()
     }
 
     private fun saveRemoteData(outageResponse: OutageResponse) {

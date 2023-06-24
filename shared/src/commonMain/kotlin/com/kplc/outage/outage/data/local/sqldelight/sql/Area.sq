@@ -16,3 +16,6 @@ WHERE regionId = ?;
 insert:
 INSERT OR REPLACE INTO area(name, partId, regionId)
 VALUES ?;
+
+deleteAll:
+DELETE FROM area;

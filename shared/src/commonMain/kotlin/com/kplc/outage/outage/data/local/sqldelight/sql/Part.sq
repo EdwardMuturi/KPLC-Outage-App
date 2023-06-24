@@ -20,3 +20,6 @@ WHERE regionId = ?;
 insert:
 INSERT OR REPLACE INTO part(name, regionId)
 VALUES ?;
+
+deleteAll:
+DELETE FROM part;
