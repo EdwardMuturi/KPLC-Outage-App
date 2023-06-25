@@ -15,22 +15,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,37 +59,81 @@ import com.kplc.outage.outage.model.OutageInformationUiState
 import com.kplc.outage.outage.presentation.OutageViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.get
 
 val outageBlue500 = Color(0XFF0B4A7A)
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Destination(start = true)
 fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: DestinationsNavigator) {
     val outageInformation by outageViewModel.outageInformationUiState.collectAsState()
+    var url by remember { mutableStateOf(TextFieldValue("")) }
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState()
+
 
     LaunchedEffect(key1 = true, block = {
         outageViewModel.fetchOutages()
     })
 
-//    Display bottom sheet
-    Scaffold(topBar = {
-        TopAppBar(
-            backgroundColor = Color.White,
-            contentColor = Color.Black,
-            title = {
-                Row(Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(
-                        text = stringResource(R.string.power_interruptions),
-                        fontWeight = FontWeight.Medium,
-                    )
+    BottomSheetScaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = Color.White,
+                contentColor = Color.Black,
+                title = {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.power_interruptions),
+                            fontWeight = FontWeight.Medium,
+                        )
 
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add url", modifier = Modifier.padding(horizontal = 20.dp).clickable {  })
+                        Icon(imageVector = Icons.Default.Add,
+                            contentDescription = "Add url",
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp)
+                                .clickable {scope.launch { scaffoldState.bottomSheetState.expand() } })
+                    }
+                },
+            )
+        },
+        sheetContent = {
+            Column(Modifier.padding(20.dp)) {
+                Text(
+                    text = "Load more data from outage url",
+                    style = MaterialTheme.typography.subtitle2,
+                    color = outageBlue500
+                )
+                OutlinedTextField(
+                    value = url,
+                    onValueChange = { url = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
+                    placeholder = { Text(text = stringResource(R.string.paste_url)) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Clear",
+                        )
+                    },
+                )
+
+                Button(
+                    modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(.5f).height(50.dp),
+                    onClick = { scope.launch { scaffoldState.bottomSheetState.collapse() } }) {
+                    Text(text = "Load Data")
                 }
-            },
-        )
-    }) { padding ->
+            }
+        },
+        scaffoldState = scaffoldState,
+        sheetPeekHeight = 0.dp
+    ) { padding ->
         OutagesScreenContent(padding, outageInformation) { state ->
             navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
         }
