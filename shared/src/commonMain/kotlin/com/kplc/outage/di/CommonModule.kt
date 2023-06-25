@@ -6,7 +6,6 @@ import com.kplc.outage.outage.data.remote.OutageService
 import com.kplc.outage.outage.domain.FetchOutagesUseCase
 import com.kplc.outage.outage.presentation.OutageViewModel
 import com.kplc.outage.outage.utils.OutageConstants.BASE_URL
-import com.kplc.outage.presentation.viewmodels.MainViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -18,11 +17,9 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 fun commonModule(isDebug: Boolean) = module {
-    singleOf(::MainViewModel)
 }
 
 val presentation = module {
