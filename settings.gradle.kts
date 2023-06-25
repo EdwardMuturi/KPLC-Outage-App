@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "KMP_Template"
+rootProject.name = "KPLC-Outage-App"
 include(":app-android")
-include(":app-desktop")
+// include(":app-desktop")
 include(":shared")

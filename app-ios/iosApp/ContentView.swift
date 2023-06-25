@@ -1,11 +1,9 @@
 import SwiftUI
-import shared
+// import shared
 
 struct ContentView: View {
-	let greet = Greeting().greeting()
-
 	var body: some View {
-		Text(greet)
+		OutagesScreen()
 	}
 }
 
