@@ -9,22 +9,23 @@ import com.kplc.outage.outage.data.remote.Dto.OutageResponse
 import com.kplc.outage.outage.data.remote.Dto.PartDto
 import com.kplc.outage.outage.data.remote.Dto.RegionDto
 import com.kplc.outage.outage.data.remote.OutageService
+import com.kplc.outage.outage.utils.NetworkResult
+import com.kplc.outage.outage.utils.safeApiCall
+import io.github.aakira.napier.Napier
 
 class OutageRepository(
     private val outageService: OutageService,
     private val database: AppDatabase,
 ) {
     suspend fun loadOutages() {
-        val outageResponse = outageService.fetchOutages()
-        clearTables()
-        saveRemoteData(outageResponse)
-    }
+        when (val outageResponse = safeApiCall { outageService.fetchOutages() }) {
+            is NetworkResult.Error -> Napier.e { "Failed to load remote data, ${outageResponse.errorMessage}" }
+            is NetworkResult.Success -> {
+                clearTables()
+                outageResponse.data?.let { saveRemoteData(it) }
+            }
+        }
 
-    private fun clearTables() {
-        database.areaQueries.deleteAll()
-        database.partQueries.deleteAll()
-        database.placeQueries.deleteAll()
-        database.regionQueries.deleteAll()
     }
 
     private fun saveRemoteData(outageResponse: OutageResponse) {
@@ -50,6 +51,7 @@ class OutageRepository(
             }
         }
     }
+
     private fun savePlace(region: String, place: String, area: AreaDto) {
         database.placeQueries.insert(
             Place(
@@ -100,4 +102,12 @@ class OutageRepository(
 
     fun findPlacesByRegion(regionId: String): List<Place> =
         database.placeQueries.findByRegionId(regionId).executeAsList()
+
+    private fun clearTables() {
+        database.areaQueries.deleteAll()
+        database.partQueries.deleteAll()
+        database.placeQueries.deleteAll()
+        database.regionQueries.deleteAll()
+    }
+
 }
