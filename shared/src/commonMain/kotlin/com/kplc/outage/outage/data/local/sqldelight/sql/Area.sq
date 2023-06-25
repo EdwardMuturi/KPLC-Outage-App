@@ -1,0 +1,23 @@
+CREATE TABLE area (
+name TEXT NOT NULL,
+regionId TEXT NOT NULL,
+date TEXT NOT NULL,
+startTime TEXT NOT NULL,
+endTime TEXT NOT NULL
+);
+
+tAll:
+SELECT *
+FROM area;
+
+findByRegionId:
+SELECT *
+FROM area
+WHERE regionId = ?;
+
+insert:
+INSERT OR REPLACE INTO area(name, regionId, date, startTime, endTime)
+VALUES ?;
+
+deleteAll:
+DELETE FROM area;

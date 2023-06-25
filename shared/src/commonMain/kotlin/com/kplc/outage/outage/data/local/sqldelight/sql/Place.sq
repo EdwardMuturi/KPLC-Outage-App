@@ -1,0 +1,26 @@
+CREATE TABLE place (
+name TEXT NOT NULL,
+areaId TEXT NOT NULL,
+regionId TEXT NOT NULL
+);
+
+lectAll:
+SELECT *
+FROM place;
+
+findByAreaId:
+SELECT *
+FROM place
+WHERE areaId = ?;
+
+findByRegionId:
+SELECT *
+FROM place
+WHERE regionId = ?;
+
+insert:
+INSERT OR REPLACE INTO place
+VALUES ?;
+
+deleteAll:
+DELETE FROM place;

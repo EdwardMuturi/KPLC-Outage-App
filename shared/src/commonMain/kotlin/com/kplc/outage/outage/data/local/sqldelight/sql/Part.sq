@@ -1,0 +1,25 @@
+CREATE TABLE part (
+name TEXT NOT NULL,
+regionId TEXT NOT NULL
+);
+
+tAll:
+SELECT *
+FROM part;
+
+findByName:
+SELECT *
+FROM part
+WHERE name = ?;
+
+findByRegionId:
+SELECT *
+FROM part
+WHERE regionId = ?;
+
+insert:
+INSERT OR REPLACE INTO part(name, regionId)
+VALUES ?;
+
+deleteAll:
+DELETE FROM part;
