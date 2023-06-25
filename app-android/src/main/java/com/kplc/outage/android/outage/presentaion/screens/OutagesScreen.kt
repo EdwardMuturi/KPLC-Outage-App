@@ -28,8 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +39,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kplc.outage.android.R
@@ -76,9 +73,18 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
             },
         )
     }) { padding ->
-        OutagesScreenContent(padding, outageInformation) { state ->
-            navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
-        }
+        OutagesScreenContent(
+            padding = padding,
+            outageInformation = outageInformation,
+            searchValue = outageViewModel.searchValue.collectAsState().value,
+            showMoreDetails = { state ->
+                navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
+            },
+            onSearchValueChange = {
+                outageViewModel.setSearchValue(it)
+                outageViewModel.fetchOutages(it)
+            },
+        )
     }
 }
 
@@ -87,6 +93,8 @@ private fun OutagesScreenContent(
     padding: PaddingValues,
     outageInformation: OutageInformation,
     showMoreDetails: (OutageInformationUiState) -> Unit,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -95,28 +103,25 @@ private fun OutagesScreenContent(
             .fillMaxSize(),
     ) {
         item {
-            var searchValue by remember { mutableStateOf(TextFieldValue("")) }
-            if (outageInformation.outages.isNotEmpty()) {
-                OutlinedTextField(
-                    value = searchValue,
-                    onValueChange = { searchValue = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(text = stringResource(R.string.search)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search),
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
-                            contentDescription = "Filter",
-                            tint = outageBlue500,
-                        )
-                    },
-                )
-            }
+            OutlinedTextField(
+                value = searchValue,
+                onValueChange = onSearchValueChange,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(text = stringResource(R.string.search)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search),
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
+                        contentDescription = "Filter",
+                        tint = outageBlue500,
+                    )
+                },
+            )
         }
         item {
             when (outageInformation.isLoading) {

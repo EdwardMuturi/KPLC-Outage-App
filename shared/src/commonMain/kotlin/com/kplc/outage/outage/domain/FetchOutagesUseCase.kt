@@ -34,5 +34,4 @@ class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
 
         emit(OutageInformation(isLoading = false, outages = outages))
     }
-
 }
