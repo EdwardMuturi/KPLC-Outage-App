@@ -23,6 +23,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,15 +65,21 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
         outageViewModel.fetchOutages()
     })
 
+//    Display bottom sheet
     Scaffold(topBar = {
         TopAppBar(
             backgroundColor = Color.White,
             contentColor = Color.Black,
             title = {
-                Text(
-                    text = stringResource(R.string.power_interruptions),
-                    fontWeight = FontWeight.Medium,
-                )
+                Row(Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = stringResource(R.string.power_interruptions),
+                        fontWeight = FontWeight.Medium,
+                    )
+
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add url", modifier = Modifier.padding(horizontal = 20.dp).clickable {  })
+                }
             },
         )
     }) { padding ->
