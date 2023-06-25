@@ -53,6 +53,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.get
 
+val outageBlue500 = Color(0XFF0B4A7A)
+
 @Composable
 @Destination(start = true)
 fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: DestinationsNavigator) {
@@ -74,7 +76,7 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
             },
         )
     }) { padding ->
-        OutagesScreenContent(padding, outageInformation) {state ->
+        OutagesScreenContent(padding, outageInformation) { state ->
             navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
         }
     }
@@ -110,7 +112,7 @@ private fun OutagesScreenContent(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
                             contentDescription = "Filter",
-                            tint = Color(0XFF0B4A7A),
+                            tint = outageBlue500,
                         )
                     },
                 )
