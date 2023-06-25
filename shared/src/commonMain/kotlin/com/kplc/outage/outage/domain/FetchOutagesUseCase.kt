@@ -6,8 +6,8 @@ import com.kplc.outage.outage.model.OutageInformationUiState
 import kotlinx.coroutines.flow.flow
 
 class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
-    operator fun invoke() = flow {
-        outageRepository.loadOutages()
+    operator fun invoke(url: String) = flow {
+        outageRepository.loadOutages(url)
         emit(OutageInformation(isLoading = true))
         val outages = mutableListOf<OutageInformationUiState>()
         outageRepository.findAllRegions()

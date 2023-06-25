@@ -17,8 +17,8 @@ class OutageRepository(
     private val outageService: OutageService,
     private val database: AppDatabase,
 ) {
-    suspend fun loadOutages() {
-        when (val outageResponse = safeApiCall { outageService.fetchOutages() }) {
+    suspend fun loadOutages(url: String) {
+        when (val outageResponse = safeApiCall { outageService.fetchOutages(url) }) {
             is NetworkResult.Error -> Napier.e { "Failed to load remote data, ${outageResponse.errorMessage}" }
             is NetworkResult.Success -> {
                 clearTables()

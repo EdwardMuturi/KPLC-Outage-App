@@ -72,11 +72,11 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
     var url by remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
-
-
-    LaunchedEffect(key1 = true, block = {
-        outageViewModel.fetchOutages()
-    })
+    if (outageInformation.outages.isEmpty())
+        LaunchedEffect(key1 = true, block = {
+            if (outageInformation.outages.isEmpty())
+                scaffoldState.bottomSheetState.expand()
+        })
 
     BottomSheetScaffold(
         topBar = {
@@ -97,7 +97,7 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
                             contentDescription = "Add url",
                             modifier = Modifier
                                 .padding(horizontal = 20.dp)
-                                .clickable {scope.launch { scaffoldState.bottomSheetState.expand() } })
+                                .clickable { scope.launch { scaffoldState.bottomSheetState.expand() } })
                     }
                 },
             )
@@ -125,8 +125,14 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
                 )
 
                 Button(
-                    modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(.5f).height(50.dp),
-                    onClick = { scope.launch { scaffoldState.bottomSheetState.collapse() } }) {
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(.5f)
+                        .height(50.dp),
+                    onClick = {
+                        outageViewModel.fetchOutages(url.text)
+                        scope.launch { scaffoldState.bottomSheetState.collapse() }
+                    }) {
                     Text(text = "Load Data")
                 }
             }
