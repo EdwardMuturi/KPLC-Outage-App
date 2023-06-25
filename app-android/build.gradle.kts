@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.android.kotlin)
     id("com.google.devtools.ksp") version "1.8.10-1.0.9"
+    kotlin("plugin.serialization") version "1.8.21"
 }
 
 android {
@@ -65,6 +66,9 @@ dependencies {
 //    compose destination
     implementation("io.github.raamcosta.compose-destinations:core:1.9.42-beta")
     ksp("io.github.raamcosta.compose-destinations:ksp:1.9.42-beta")
+
+//    kotlinX serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     testImplementation(libs.jUnitKtx)
     testImplementation(libs.kotlinX.coroutines.test)

@@ -46,7 +46,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kplc.outage.android.R
 import com.kplc.outage.android.outage.presentaion.screens.destinations.OutageDetailsScreenDestination
-import com.kplc.outage.android.outage.presentaion.screens.destinations.OutagesScreenDestination
 import com.kplc.outage.outage.model.OutageInformation
 import com.kplc.outage.outage.model.OutageInformationUiState
 import com.kplc.outage.outage.presentation.OutageViewModel
@@ -75,10 +74,8 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
             },
         )
     }) { padding ->
-        OutagesScreenContent(padding, outageInformation) {
-            navigator.navigate(
-                OutageDetailsScreenDestination(outageInformationUiState= outageInformation).route,
-            )
+        OutagesScreenContent(padding, outageInformation) {state ->
+            navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
         }
     }
 }
@@ -87,7 +84,7 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
 private fun OutagesScreenContent(
     padding: PaddingValues,
     outageInformation: OutageInformation,
-    showMoreDetails: () -> Unit,
+    showMoreDetails: (OutageInformationUiState) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -139,7 +136,7 @@ private fun OutagesScreenContent(
                             }
                         }
                         OutageCard(outage, places) {
-                            showMoreDetails()
+                            showMoreDetails(outage)
                         }
                     }
                 }
