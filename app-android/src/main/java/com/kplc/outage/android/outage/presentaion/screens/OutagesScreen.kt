@@ -1,9 +1,11 @@
 package com.kplc.outage.android.outage.presentaion.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,12 +45,18 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kplc.outage.android.R
+import com.kplc.outage.android.outage.presentaion.screens.destinations.OutageDetailsScreenDestination
+import com.kplc.outage.android.outage.presentaion.screens.destinations.OutagesScreenDestination
+import com.kplc.outage.outage.model.OutageInformation
 import com.kplc.outage.outage.model.OutageInformationUiState
 import com.kplc.outage.outage.presentation.OutageViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.get
 
 @Composable
-fun OutagesScreen(outageViewModel: OutageViewModel = get()) {
+@Destination(start = true)
+fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: DestinationsNavigator) {
     val outageInformation by outageViewModel.outageInformationUiState.collectAsState()
 
     LaunchedEffect(key1 = true, block = {
@@ -61,46 +69,77 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get()) {
             contentColor = Color.Black,
             title = {
                 Text(
-                    text = "Power Interruptions",
+                    text = stringResource(R.string.power_interruptions),
                     fontWeight = FontWeight.Medium,
                 )
             },
         )
     }) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding).padding(20.dp).fillMaxSize()) {
-            item {
-                var searchValue by remember { mutableStateOf(TextFieldValue("")) }
-                if (outageInformation.outages.isNotEmpty()) {
-                    OutlinedTextField(
-                        value = searchValue,
-                        onValueChange = { searchValue = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text(text = stringResource(R.string.search)) },
-                        leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search)) },
-                        trailingIcon = { Icon(imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24), contentDescription = "Filter", tint = Color(0XFF0B4A7A)) },
-                    )
-                }
+        OutagesScreenContent(padding, outageInformation) {
+            navigator.navigate(
+                OutageDetailsScreenDestination(outageInformationUiState= outageInformation).route,
+            )
+        }
+    }
+}
+
+@Composable
+private fun OutagesScreenContent(
+    padding: PaddingValues,
+    outageInformation: OutageInformation,
+    showMoreDetails: () -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(padding)
+            .padding(20.dp)
+            .fillMaxSize(),
+    ) {
+        item {
+            var searchValue by remember { mutableStateOf(TextFieldValue("")) }
+            if (outageInformation.outages.isNotEmpty()) {
+                OutlinedTextField(
+                    value = searchValue,
+                    onValueChange = { searchValue = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(text = stringResource(R.string.search)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.search),
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
+                            contentDescription = "Filter",
+                            tint = Color(0XFF0B4A7A),
+                        )
+                    },
+                )
             }
-            item {
-                when (outageInformation.isLoading) {
-                    true -> CircularProgressIndicator()
-                    false -> {
-                        if (outageInformation.outages.isEmpty()) {
-                            Text(text = "No outage data found at the moment, please try again later")
-                        }
-                        outageInformation.outages.forEach { outage ->
-                            val places = buildAnnotatedString {
-                                withStyle(SpanStyle()) {
-                                    append(outage.places[0])
-                                }
-                                withStyle(SpanStyle()) {
-                                    outage.places.subList(1, 3)
-                                        .forEach {
-                                            append(", $it")
-                                        }
-                                }
+        }
+        item {
+            when (outageInformation.isLoading) {
+                true -> CircularProgressIndicator()
+                false -> {
+                    if (outageInformation.outages.isEmpty()) {
+                        Text(text = "No outage data found at the moment, please try again later")
+                    }
+                    outageInformation.outages.forEach { outage ->
+                        val places = buildAnnotatedString {
+                            withStyle(SpanStyle()) {
+                                append(outage.places[0])
                             }
-                            OutageCard(outage, places)
+                            withStyle(SpanStyle()) {
+                                outage.places.subList(1, 3)
+                                    .forEach {
+                                        append(", $it")
+                                    }
+                            }
+                        }
+                        OutageCard(outage, places) {
+                            showMoreDetails()
                         }
                     }
                 }
@@ -113,17 +152,20 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get()) {
 private fun OutageCard(
     outage: OutageInformationUiState,
     aT: AnnotatedString,
+    onViewDetails: () -> Unit,
 ) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(2.dp),
         modifier = Modifier
+            .clickable { onViewDetails() }
             .padding(vertical = 10.dp),
     ) {
-        val borderModifier= if (outage.part.isEmpty())
+        val borderModifier = if (outage.part.isEmpty()) {
             Modifier.height(140.dp)
-        else
+        } else {
             Modifier.height(180.dp)
+        }
 
         Box(Modifier.fillMaxWidth()) {
             Spacer(

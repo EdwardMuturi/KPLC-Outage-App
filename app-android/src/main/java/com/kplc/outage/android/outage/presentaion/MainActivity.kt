@@ -10,7 +10,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import com.kplc.outage.android.outage.presentaion.screens.NavGraphs
 import com.kplc.outage.android.outage.presentaion.screens.OutagesScreen
+import com.ramcosta.composedestinations.DestinationsNavHost
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -25,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
-                    OutagesScreen()
+                    DestinationsNavHost(navGraph = NavGraphs.root)
                 }
             }
         }

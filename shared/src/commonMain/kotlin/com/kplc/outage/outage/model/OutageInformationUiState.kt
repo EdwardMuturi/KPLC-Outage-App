@@ -1,5 +1,8 @@
 package com.kplc.outage.outage.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class OutageInformationUiState(
     val region: String = "",
     val part: String = "",

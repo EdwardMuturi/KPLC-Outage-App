@@ -2,4 +2,5 @@
 <resources>
     <string name="search">Search...</string>
     <string name="app_name">Kplc Interruptions</string>
+    <string name="power_interruptions">Power Interruptions</string>
 </resources>

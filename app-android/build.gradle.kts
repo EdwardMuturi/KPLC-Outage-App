@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.android.kotlin)
+    id("com.google.devtools.ksp") version "1.8.10-1.0.9"
 }
 
 android {
@@ -60,6 +61,10 @@ dependencies {
 
     // Compose Navigation-Navigation between various screens
     implementation(libs.navigation.compose)
+
+//    compose destination
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.42-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.42-beta")
 
     testImplementation(libs.jUnitKtx)
     testImplementation(libs.kotlinX.coroutines.test)
