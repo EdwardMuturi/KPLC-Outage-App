@@ -1,15 +1,12 @@
 package com.kplc.outage.presentation.viewmodels
 
-import com.kplc.outage.outage.data.OutageRepository
-import com.kplc.outage.presentation.utils.Greeting
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class MainViewModel constructor(private val greetingRepository: Greeting) : KoinComponent {
+class MainViewModel : KoinComponent {
 
     // @NativeCoroutineScope
     private val viewModelScope = CoroutineScope(Dispatchers.Default)
@@ -22,6 +19,6 @@ class MainViewModel constructor(private val greetingRepository: Greeting) : Koin
     }
 
     private fun greetings() = viewModelScope.launch {
-        _greeting.value = greetingRepository.greet()
+        _greeting.value = "Hello, World!"
     }
 }

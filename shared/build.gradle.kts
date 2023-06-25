@@ -26,9 +26,15 @@ kotlin {
             System.getenv("NATIVE_ARCH")?.startsWith("arm") == true -> ::iosSimulatorArm64
             else -> ::iosX64
         }
-    iosTarget("iOS") {}
+    iosTarget("iOS") {
+        binaries {
+            framework {
+                baseName = "shared"
+            }
+        }
+    }
 
-    jvm()
+    // jvm()
 
     sourceSets {
         sourceSets["commonMain"].dependencies {
@@ -59,6 +65,7 @@ kotlin {
 
         sourceSets["androidMain"].dependencies {
             implementation(libs.sqlDelight.android)
+            implementation(libs.ktor.android)
         }
 
         sourceSets["androidTest"].dependencies {
@@ -66,17 +73,18 @@ kotlin {
 
         sourceSets["iOSMain"].dependencies {
             implementation(libs.sqlDelight.native)
+            implementation(libs.ktor.ios)
         }
 
         sourceSets["iOSTest"].dependencies {
         }
 
-        sourceSets["jvmMain"].dependencies {
+/*         sourceSets["jvmMain"].dependencies {
             implementation(libs.sqlDelight.jvm)
-        }
+        } */
 
-        sourceSets["jvmTest"].dependencies {
-        }
+/*         sourceSets["jvmTest"].dependencies {
+        } */
     }
 }
 
