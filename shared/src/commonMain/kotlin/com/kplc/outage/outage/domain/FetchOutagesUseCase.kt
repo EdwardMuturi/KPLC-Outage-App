@@ -35,25 +35,4 @@ class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
         emit(OutageInformation(isLoading = false, outages = outages))
     }
 
-//    private fun List<String>.mapToOutageInformationRegionUiState(fetchPlacesByRegion: (String) -> List<Place>) =
-//        OutageInformationUiState(
-//            regions = this.map { region ->
-//                val places = fetchPlacesByRegion(region)
-//                OutageInformationRegionUiState(
-//                    region.trim().trimIndent(),
-//
-//                )
-//            },
-//        )
 }
-
-/**
- * parts = places.map {
-OutageInformationAreaUiState(
-it.name,
-"",
-"",
-places.map { place -> OutageInformationPlacesUiState(place.name) },
-)
-},
- * */
