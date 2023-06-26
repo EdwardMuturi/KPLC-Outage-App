@@ -6,9 +6,17 @@ import com.kplc.outage.outage.model.OutageInformationUiState
 import kotlinx.coroutines.flow.flow
 
 class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
-    operator fun invoke(url: String) = flow {
-        outageRepository.loadOutages(url)
+    operator fun invoke(url: String? = null) = flow {
+        when(url != null){
+            true ->  outageRepository.loadOutages(url)
+            false -> outageRepository.fetchRecentUrl()?.let { outageRepository.loadOutages(it) }
+        }
+
         emit(OutageInformation(isLoading = true))
+        emit(OutageInformation(isLoading = false, outages = populateOutageUiState()))
+    }
+
+    private fun populateOutageUiState(): List<OutageInformationUiState> {
         val outages = mutableListOf<OutageInformationUiState>()
         outageRepository.findAllRegions()
             .onEach { region ->
@@ -31,8 +39,7 @@ class FetchOutagesUseCase(private val outageRepository: OutageRepository) {
                             }
                     }
             }
-
-        emit(OutageInformation(isLoading = false, outages = outages))
+        return outages
     }
 
 }

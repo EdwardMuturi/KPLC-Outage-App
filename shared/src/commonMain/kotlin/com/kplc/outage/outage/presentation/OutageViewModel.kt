@@ -21,7 +21,7 @@ class OutageViewModel constructor(private val fetchOutagesUseCase: FetchOutagesU
         MutableStateFlow(OutageInformation()).toCommonMutableStateFlow()
     val outageInformationUiState get() = _outageInformationUiState.asStateFlow().toCommonStateFlow()
 
-    fun fetchOutages(url: String) {
+    fun fetchOutages(url: String? = null) {
         viewModelScope.launch {
             fetchOutagesUseCase(url).collectLatest { state ->
                 _outageInformationUiState.update { state }

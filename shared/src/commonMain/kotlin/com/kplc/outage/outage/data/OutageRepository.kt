@@ -2,6 +2,7 @@ package com.kplc.outage.outage.data
 
 import com.kplc.outage.outage.data.local.sqldelight.AppDatabase
 import com.kplc.outage.outage.data.local.sqldelight.sql.Area
+import com.kplc.outage.outage.data.local.sqldelight.sql.OutageUrl
 import com.kplc.outage.outage.data.local.sqldelight.sql.Part
 import com.kplc.outage.outage.data.local.sqldelight.sql.Place
 import com.kplc.outage.outage.data.remote.Dto.AreaDto
@@ -22,10 +23,20 @@ class OutageRepository(
             is NetworkResult.Error -> Napier.e { "Failed to load remote data, ${outageResponse.errorMessage}" }
             is NetworkResult.Success -> {
                 clearTables()
-                outageResponse.data?.let { saveRemoteData(it) }
+                outageResponse.data?.let {
+                    database.outageUrlQueries.insert(OutageUrl(url))
+                    saveRemoteData(it)
+                }
             }
         }
+    }
 
+    fun fetchRecentUrl(): String? {
+        return try {
+            database.outageUrlQueries.findAll().executeAsOne()
+        }catch (e: Exception){
+            null
+        }
     }
 
     private fun saveRemoteData(outageResponse: OutageResponse) {

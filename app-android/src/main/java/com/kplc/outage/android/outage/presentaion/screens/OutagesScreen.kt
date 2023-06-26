@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kplc.outage.android.R
@@ -72,11 +74,10 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
     var url by remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
-    if (outageInformation.outages.isEmpty())
-        LaunchedEffect(key1 = true, block = {
-            if (outageInformation.outages.isEmpty())
-                scaffoldState.bottomSheetState.expand()
-        })
+    outageViewModel.fetchOutages(url.text)
+    LaunchedEffect(key1 = url, block = {
+        outageViewModel.fetchOutages()
+    })
 
     BottomSheetScaffold(
         topBar = {
@@ -105,21 +106,26 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
         sheetContent = {
             Column(Modifier.padding(20.dp)) {
                 Text(
-                    text = "Load more data from outage url",
-                    style = MaterialTheme.typography.subtitle2,
-                    color = outageBlue500
+                    text = "Load url data",
+                    style = MaterialTheme.typography.h6,
+                    color = outageBlue500,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
                 )
                 OutlinedTextField(
                     value = url,
                     onValueChange = { url = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp),
+                        .padding(bottom = 20.dp),
                     placeholder = { Text(text = stringResource(R.string.paste_url)) },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Clear",
+                            modifier = Modifier.clickable { url = TextFieldValue("") }
                         )
                     },
                 )
@@ -132,7 +138,12 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
                     onClick = {
                         outageViewModel.fetchOutages(url.text)
                         scope.launch { scaffoldState.bottomSheetState.collapse() }
-                    }) {
+                        url = TextFieldValue("")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = outageBlue500,
+                        contentColor = Color.White
+                    )) {
                     Text(text = "Load Data")
                 }
             }
@@ -221,7 +232,7 @@ private fun OutageCard(
         elevation = 4.dp,
         shape = RoundedCornerShape(2.dp),
         modifier = Modifier
-            .clickable { onViewDetails() }
+//            .clickable { onViewDetails() }
             .padding(vertical = 10.dp),
     ) {
         val borderModifier = if (outage.part.isEmpty()) {
