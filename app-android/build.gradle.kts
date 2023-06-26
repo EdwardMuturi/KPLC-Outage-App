@@ -70,6 +70,9 @@ dependencies {
 //    kotlinX serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
+//    lottie
+    implementation (libs.lottie)
+
     testImplementation(libs.jUnitKtx)
     testImplementation(libs.kotlinX.coroutines.test)
     testImplementation(libs.mockk)

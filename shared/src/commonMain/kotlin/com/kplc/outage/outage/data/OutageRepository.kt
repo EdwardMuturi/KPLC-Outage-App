@@ -2,6 +2,7 @@ package com.kplc.outage.outage.data
 
 import com.kplc.outage.outage.data.local.sqldelight.AppDatabase
 import com.kplc.outage.outage.data.local.sqldelight.sql.Area
+import com.kplc.outage.outage.data.local.sqldelight.sql.OutageUrl
 import com.kplc.outage.outage.data.local.sqldelight.sql.Part
 import com.kplc.outage.outage.data.local.sqldelight.sql.Place
 import com.kplc.outage.outage.data.remote.Dto.AreaDto
@@ -17,15 +18,25 @@ class OutageRepository(
     private val outageService: OutageService,
     private val database: AppDatabase,
 ) {
-    suspend fun loadOutages() {
-        when (val outageResponse = safeApiCall { outageService.fetchOutages() }) {
+    suspend fun loadOutages(url: String) {
+        when (val outageResponse = safeApiCall { outageService.fetchOutages(url) }) {
             is NetworkResult.Error -> Napier.e { "Failed to load remote data, ${outageResponse.errorMessage}" }
             is NetworkResult.Success -> {
                 clearTables()
-                outageResponse.data?.let { saveRemoteData(it) }
+                outageResponse.data?.let {
+                    database.outageUrlQueries.insert(OutageUrl(url))
+                    saveRemoteData(it)
+                }
             }
         }
+    }
 
+    fun fetchRecentUrl(): String? {
+        return try {
+            database.outageUrlQueries.findAll().executeAsOne()
+        }catch (e: Exception){
+            null
+        }
     }
 
     private fun saveRemoteData(outageResponse: OutageResponse) {
