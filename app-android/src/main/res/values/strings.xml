@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="search">Search...</string>
+    <string name="paste_url">Paste url here</string>
     <string name="app_name">Kplc Interruptions</string>
     <string name="power_interruptions">Power Interruptions</string>
 </resources>

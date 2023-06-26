@@ -13,10 +13,10 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class OutageService(private val httpClient: HttpClient) {
-    suspend fun fetchOutages(): OutageResponse {
+    suspend fun fetchOutages(url: String): OutageResponse {
         return httpClient.post {
             contentType(ContentType.Application.Json)
-            setBody(OutageRequest(url = "https://www.kplc.co.ke/img/full/Interruptions - 26.01.2023.pdf"))
+            setBody(OutageRequest(url = url))
         }
             .bodyAsText()
             .let {

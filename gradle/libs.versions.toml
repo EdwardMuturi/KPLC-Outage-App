@@ -16,6 +16,7 @@ koinAndroid = "3.4.0"
 koinCompose = "3.4.3"
 kotlinxSerializationJson = "1.5.0"
 kotlinxDateTime = "0.4.0"
+lottie = "6.0.1"
 napier = "2.4.0"
 ktor = "2.2.4"
 sqlDelight = "1.5.5"
@@ -103,6 +104,7 @@ ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 sqlDelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqlDelight" }
 sqlDelight-coroutine = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 sqlDelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqlDelight" }
