@@ -1,5 +1,6 @@
 package com.kplc.outage.android.outage.presentaion.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +25,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -46,7 +46,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -74,6 +73,9 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
     var url by remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
+    var refreshing by remember { mutableStateOf(outageInformation.isLoading) }
+    var isInputValid by remember { mutableStateOf(true) }
+
     outageViewModel.fetchOutages(url.text)
     LaunchedEffect(key1 = url, block = {
         outageViewModel.fetchOutages()
@@ -118,9 +120,9 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
                     value = url,
                     onValueChange = { url = it },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 20.dp),
+                        .fillMaxWidth(),
                     placeholder = { Text(text = stringResource(R.string.paste_url)) },
+                    singleLine = true,
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.Clear,
@@ -129,13 +131,26 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
                         )
                     },
                 )
+                if (!isInputValid)
+                    Text(
+                        text = "Url cannot be empty",
+                        style = MaterialTheme.typography.caption,
+                        color = Color.Red,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                 Button(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(.5f)
+                        .padding(top = 20.dp)
                         .height(50.dp),
                     onClick = {
+                        isInputValid = url.text.isNotEmpty()
+                        if (url.text.isEmpty())
+                            return@Button
+
                         outageViewModel.fetchOutages(url.text)
                         scope.launch { scaffoldState.bottomSheetState.collapse() }
                         url = TextFieldValue("")
@@ -143,7 +158,8 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = outageBlue500,
                         contentColor = Color.White
-                    )) {
+                    )
+                ) {
                     Text(text = "Load Data")
                 }
             }
@@ -163,6 +179,8 @@ private fun OutagesScreenContent(
     outageInformation: OutageInformation,
     showMoreDetails: (OutageInformationUiState) -> Unit,
 ) {
+    val modifier =
+
     LazyColumn(
         modifier = Modifier
             .padding(padding)
@@ -195,24 +213,13 @@ private fun OutagesScreenContent(
         }
         item {
             when (outageInformation.isLoading) {
-                true -> CircularProgressIndicator()
+                true -> Column(Modifier.fillMaxWidth()) { CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally), color = outageBlue500) }
                 false -> {
                     if (outageInformation.outages.isEmpty()) {
                         Text(text = "No outage data found at the moment, please try again later")
                     }
                     outageInformation.outages.forEach { outage ->
-                        val places = buildAnnotatedString {
-                            withStyle(SpanStyle()) {
-                                append(outage.places[0])
-                            }
-                            withStyle(SpanStyle()) {
-                                outage.places.subList(1, 3)
-                                    .forEach {
-                                        append(", $it")
-                                    }
-                            }
-                        }
-                        OutageCard(outage, places) {
+                        OutageCard(outage) {
                             showMoreDetails(outage)
                         }
                     }
@@ -225,14 +232,12 @@ private fun OutagesScreenContent(
 @Composable
 private fun OutageCard(
     outage: OutageInformationUiState,
-    aT: AnnotatedString,
     onViewDetails: () -> Unit,
 ) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(2.dp),
         modifier = Modifier
-//            .clickable { onViewDetails() }
             .padding(vertical = 10.dp),
     ) {
         val borderModifier = if (outage.part.isEmpty()) {
@@ -275,17 +280,28 @@ private fun OutageCard(
                     OutageText(text = "${outage.startTime} - ${outage.endTime}")
                 }
 
-                OutageAnnotatedText(aT)
+                OutageAnnotatedText(outage)
             }
         }
     }
 }
 
 @Composable
-private fun OutageAnnotatedText(text: AnnotatedString) {
+private fun OutageAnnotatedText(outage: OutageInformationUiState) {
+    val places = buildAnnotatedString {
+        if (outage.places.isNotEmpty())
+            withStyle(SpanStyle()) {
+                append(outage.places[0])
+                outage.places.chunked(3).first()
+                    .forEach {
+                        append(", $it")
+                    }
+            }
+        else withStyle(SpanStyle()) { append("") }
+    }
     Text(
         modifier = Modifier.padding(vertical = 5.dp),
-        text = text,
+        text = places,
     )
 }
 
