@@ -22,8 +22,8 @@ extension OutagesScreen {
                 outages: []
         )
 
-        func getOutages() {
-            viewModel.fetchOutages()
+        func getOutages(searchString: String? = nil) {
+            viewModel.fetchOutages(searchString: searchString)
         }
 
         func startObserving() {

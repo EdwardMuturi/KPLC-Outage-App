@@ -167,9 +167,18 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp
     ) { padding ->
-        OutagesScreenContent(padding, outageInformation) { state ->
-            navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
-        }
+        OutagesScreenContent(
+            padding = padding,
+            outageInformation = outageInformation,
+            searchValue = outageViewModel.searchValue.collectAsState().value,
+            showMoreDetails = { state ->
+                navigator.navigate(OutageDetailsScreenDestination(outageInformationUiState = state).route)
+            },
+            onSearchValueChange = {
+                outageViewModel.setSearchValue(it)
+                outageViewModel.fetchOutages(it)
+            },
+        )
     }
 }
 
@@ -178,9 +187,9 @@ private fun OutagesScreenContent(
     padding: PaddingValues,
     outageInformation: OutageInformation,
     showMoreDetails: (OutageInformationUiState) -> Unit,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit,
 ) {
-    val modifier =
-
     LazyColumn(
         modifier = Modifier
             .padding(padding)
@@ -188,28 +197,25 @@ private fun OutagesScreenContent(
             .fillMaxSize(),
     ) {
         item {
-            var searchValue by remember { mutableStateOf(TextFieldValue("")) }
-            if (outageInformation.outages.isNotEmpty()) {
-                OutlinedTextField(
-                    value = searchValue,
-                    onValueChange = { searchValue = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(text = stringResource(R.string.search)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search),
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
-                            contentDescription = "Filter",
-                            tint = outageBlue500,
-                        )
-                    },
-                )
-            }
+            OutlinedTextField(
+                value = searchValue,
+                onValueChange = onSearchValueChange,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(text = stringResource(R.string.search)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search),
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
+                        contentDescription = "Filter",
+                        tint = outageBlue500,
+                    )
+                },
+            )
         }
         item {
             when (outageInformation.isLoading) {

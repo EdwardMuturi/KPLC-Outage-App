@@ -11,37 +11,48 @@ import shared
 
 struct OutagesScreen: View {
     @StateObject var outagesViewModel = OutagesViewModel()
+    @State private var searchText = ""
     var body: some View {
         NavigationView {
-            ZStack {
-                VStack(alignment: .leading) {
-                    Text("Power Interruptions")
-                            .font(.title2)
-                            .frame(maxWidth: .infinity, alignment: .top)
-
-                    if outagesViewModel.outageInformationUiState.isLoading {
-                        ProgressView("Getting Outages...")
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    } else if outagesViewModel.outageInformationUiState.message != nil {
-                        Text(outagesViewModel.outageInformationUiState.message!)
-                                .font(.subheadline)
-                                .foregroundColor(.red)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                    } else {
-                        List {
-                            ForEach(outagesViewModel.outageInformationUiState.outages, id: \.self) { outage in
-                                OutageCard(outage: outage, onOutageClicked: { outage in
-                                    print("outage: \(outage.region)")
-                                })
-                            }
+            VStack(alignment: .leading) {
+                if outagesViewModel.outageInformationUiState.isLoading {
+                    ProgressView("Getting Outages...")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else if outagesViewModel.outageInformationUiState.message != nil {
+                    Text(outagesViewModel.outageInformationUiState.message!)
+                            .font(.subheadline)
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                } else if (outagesViewModel.outageInformationUiState.outages.isEmpty && !outagesViewModel.outageInformationUiState.isLoading) {
+                    Text("No outages found")
+                            .font(.subheadline)
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    List {
+                        ForEach(outagesViewModel.outageInformationUiState.outages, id: \.self) { outage in
+                            OutageCard(outage: outage, onOutageClicked: { outage in
+                                print("outage: \(outage.region)")
+                            })
                         }
-                                .listStyle(PlainListStyle())
-
+                                .listRowSeparator(.hidden)
                     }
+                            .listStyle(.plain)
                 }
             }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            Text("Power Interruptions")
+                                    .font(.title2)
+                        }
+                    }
+                    .searchable(text: $searchText)
+                    .onChange(of: searchText) { searchText in
+                        outagesViewModel.getOutages(searchString: searchText)
+                    }
+                    .autocorrectionDisabled()
         }
-                .navigationBarTitle("Power Interruptions")
                 .onAppear {
                     outagesViewModel.getOutages()
                     outagesViewModel.startObserving()
@@ -56,43 +67,59 @@ struct OutageCard: View {
     let outage: OutageInformationUiState
     let onOutageClicked: (OutageInformationUiState) -> Void
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                // Color(0XFF0B4A7A)
-                Text(outage.region)
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
+        HStack {
+            Divider()
+                    .frame(width: 4)
+                    .background(Color("BlueColor"))
+            VStack {
                 Spacer()
-                Text(outage.area ?? "")
-                        .font(.subheadline)
-            }
+                        .frame(height: 12)
+                HStack {
+                    Text(outage.region)
+                            .font(.caption)
+                            .foregroundColor(Color("BlueColor"))
+                            .fontWeight(.bold)
+                    Spacer()
+                    Text(outage.area ?? "")
+                            .font(.caption)
+                            .foregroundColor(.primary)
+                            .fontWeight(.semibold)
+                }
+                        .padding(.trailing, 8)
 
-            Spacer()
-                    .frame(height: 12)
-
-            HStack {
-                Text(outage.date)
-                        .font(.subheadline)
                 Spacer()
-                Text("\(outage.startTime) - \(outage.endTime)")
-                        .font(.subheadline)
+                        .frame(height: 12)
+
+                HStack {
+                    Text(outage.date)
+                            .font(.caption)
+                    Spacer()
+                    Text("\(outage.startTime) - \(outage.endTime)")
+                            .font(.caption)
+                }
+                        .padding(.trailing, 8)
+
+                Spacer()
+                        .frame(height: 12)
+
+                Text(
+                        outage.places
+                                .map {
+                                    $0
+                                }
+                                .joined(separator: ", ")
+                )
+                        .font(.caption)
+                        .fontWeight(.light)
+                        .padding(.trailing, 8)
+                        .frame(maxWidth: .infinity)
+                Spacer()
+                        .frame(height: 12)
             }
-
-            Spacer()
-                    .frame(height: 12)
-
-            Text(
-                    outage.places
-                            .map {
-                                $0
-                            }
-                            .joined(separator: ", ")
-            )
-                    .font(.system(size: 12))
-                    .foregroundColor(.primary)
-                    .italic()
         }
-                .padding()
+                .background(Rectangle().fill(Color.white))
+                .cornerRadius(6)
+                .shadow(color: .gray, radius: 0.5)
                 .onTapGesture {
                     onOutageClicked(outage)
                 }
