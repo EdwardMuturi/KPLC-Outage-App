@@ -76,7 +76,7 @@ fun OutagesScreen(outageViewModel: OutageViewModel = get(), navigator: Destinati
     var refreshing by remember { mutableStateOf(outageInformation.isLoading) }
     var isInputValid by remember { mutableStateOf(true) }
 
-    outageViewModel.fetchOutages(url.text)
+//    outageViewModel.fetchOutages(url.text)
     LaunchedEffect(key1 = url, block = {
         outageViewModel.fetchOutages()
     })
