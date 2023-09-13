@@ -32,10 +32,10 @@ class OutageViewModel constructor(private val fetchOutagesUseCase: FetchOutagesU
     private var searchJob: Job? = null
 
     fun fetchOutages(searchString: String? = null) {
-        searchJob?.cancel()
+//        searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(500L)
-            fetchOutagesUseCase().collectLatest { state ->
+//            delay(500L)
+            fetchOutagesUseCase(searchString).collectLatest { state ->
                 _outageInformationUiState.update {
                     it.copy(
                         isLoading = state.isLoading,
