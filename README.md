@@ -1,4 +1,5 @@
-# Kotlin-Multiplatform-Template
+# KPLC-Outage-App
+Multiplatform app that displays KPLC power outage alerts in Kenya. Consumes data parsed from pdf by this lib https://github.com/Borwe/kplc-outage-server
 
 A [kotlin multiplatform](https://kotlinlang.org/docs/multiplatform.html) project template.
 
